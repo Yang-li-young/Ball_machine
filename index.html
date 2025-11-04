@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACEMATE 网球发球机控制系统</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background-color: #f9fafb;
+            color: #1f2937;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 448px;
+            margin-top: 8px;
+        }
+
+        .court-panel {
+            position: relative;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .disconnect-btn {
+            padding: 4px 12px;
+            background-color: #e5e7eb;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .title {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .court {
+            position: relative;
+            width: 288px;
+            height: 256px;
+            background-color: #bbf7d0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        .net-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 4px;
+            background-color: black;
+        }
+
+        .baseline {
+            position: absolute;
+            left: 16px;
+            right: 16px;
+            height: 2px;
+            background-color: white;
+            opacity: 0.9;
+        }
+
+        .baseline.top {
+            top: 24px;
+            left: 32px;
+            right: 32px;
+        }
+
+        .baseline.bottom {
+            bottom: 24px;
+            left: 32px;
+            right: 32px;
+        }
+
+        .serveline {
+            position: absolute;
+            left: 32px;
+            right: 32px;
+            height: 2px;
+            background-color: white;
+            opacity: 0.9;
+        }
+
+        .serveline.top {
+            top: 80px;
+        }
+
+        .serveline.bottom {
+            bottom: 80px;
+        }
+
+        .centerline {
+            position: absolute;
+            top: 80px;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            background-color: white;
+            opacity: 0.9;
+        }
+
+        .sideline.left {
+            position: absolute;
+            left: 32px;
+            top: 24px;
+            bottom: 24px;
+            width: 2px;
+            background-color: white;
+            opacity: 0.9;
+        }
+
+        .sideline.right {
+            position: absolute;
+            right: 32px;
+            top: 24px;
+            bottom: 24px;
+            width: 2px;
+            background-color: white;
+            opacity: 0.9;
+        }
+
+        .machine-container {
+            position: absolute;
+            top: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform-origin: center top;
+            transition: transform 0.15s ease;
+        }
+
+        .machine-icon {
+            width: 40px;
+            height: 40px;
+            display: block;
+        }
+
+        .arrow {
+            position: absolute;
+            top: 55px;
+            left: 50%;
+            width: 2px;
+            height: 120px;
+            background-color: #111827;
+            transform-origin: center top;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .serve-point {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: black;
+        }
+
+        .serve-point.left {
+            left: 4px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .serve-point.right {
+            right: 4px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .control-panel {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+
+        .panel-title {
+            text-align: center;
+            padding: 12px;
+            border-radius: 6px;
+            background-color: #fdf2f8;
+            color: #374151;
+            margin-bottom: 16px;
+        }
+
+        .sequence-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .sequence-title {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .add-btn {
+            margin-left: 8px;
+            padding: 4px 12px;
+            background-color: white;
+            border: 1px solid #d1d5db;
+            border-radius: 9999px;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .group-buttons {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 16px;
+            overflow-x: auto;
+        }
+
+        .group-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            background-color: #f3f4f6;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .group-btn.active {
+            background-color: white;
+            border: 2px solid #34d399;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #fef2f2;
+            color: #dc2626;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            border: none;
+        }
+
+        .parameter-row {
+            margin-bottom: 16px;
+        }
+
+        .parameter-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .parameter-label {
+            font-size: 14px;
+        }
+
+        .parameter-value {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .parameter-slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background-color: #e5e7eb;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .parameter-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #10b981;
+            cursor: pointer;
+        }
+
+        .parameter-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #10b981;
+            cursor: pointer;
+            border: none;
+        }
+
+        .start-btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            color: white;
+            font-size: 18px;
+            font-weight: 500;
+            background-color: black;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .start-btn:hover {
+            background-color: #374151;
+        }
+
+        .start-btn.stop {
+            background-color: #dc2626;
+        }
+
+        .start-btn.stop:hover {
+            background-color: #b91c1c;
+        }
+
+        .nav-panel {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            padding: 12px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 8px;
+            text-align: center;
+            color: #6b7280;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: color 0.2s ease;
+        }
+
+        .nav-tab:hover {
+            color: #059669;
+        }
+
+        .nav-tab.active {
+            color: #059669;
+            font-weight: 600;
+        }
+
+        .group-container {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const defaultGroup = (id) => ({
+            id,
+            interval: 2,
+            upperRpm: 3500,
+            lowerRpm: 3500,
+            pitch: 30,
+            direction: 0,
+        });
+
+        function BallMachineUI() {
+            const [groups, setGroups] = useState([defaultGroup(Date.now())]);
+            const [selectedIndex, setSelectedIndex] = useState(0);
+            const [running, setRunning] = useState(false);
+            const [nav, setNav] = useState("ball-machine");
+
+            const selectedGroup = groups[selectedIndex] || groups[0];
+
+            function addGroup() {
+                const newGroups = [...groups, defaultGroup(Date.now())];
+                setGroups(newGroups);
+                setSelectedIndex(newGroups.length - 1);
+            }
+
+            function removeSelected() {
+                if (groups.length <= 1) return;
+                const newGroups = groups.filter((_, i) => i !== selectedIndex);
+                setGroups(newGroups);
+                const newIndex = Math.min(selectedIndex, Math.max(0, newGroups.length - 1));
+                setSelectedIndex(newIndex);
+            }
+
+            function updateSelected(partial) {
+                setGroups(groups.map((g, i) => (i === selectedIndex ? { ...g, ...partial } : g)));
+            }
+
+            function toggleRun() {
+                setRunning(!running);
+            }
+
+            const rotation = selectedGroup ? -selectedGroup.direction : 0;
+
+            return (
+                <div className="app-container">
+                    <div className="court-panel">
+                        <div className="header">
+                            <button className="disconnect-btn">Disconnect</button>
+                            <div className="title">ACEMATE 控制台</div>
+                        </div>
+                        <div className="court">
+                            <div className="net-line"></div>
+                            <div className="baseline top"></div>
+                            <div className="baseline bottom"></div>
+                            <div className="serveline top"></div>
+                            <div className="serveline bottom"></div>
+                            <div className="centerline"></div>
+                            <div className="sideline left"></div>
+                            <div className="sideline right"></div>
+                            {/* 发球机 3D旋转容器 */}
+                            <div
+                                style={{
+                                    position: 'absolute',
+                                    top: '24px',
+                                    left: '50%',
+                                    transform: 'translateX(-50%)',
+                                    transformStyle: 'preserve-3d',
+                                    perspective: '1000px'
+                                }}
+                            >
+                                {/* 发球机图标 - Y轴旋转 */}
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        transform: `rotateY(${rotation}deg)`,
+                                        transformOrigin: 'center bottom',
+                                        transition: 'transform 0.3s ease',
+                                        width: '40px',
+                                        height: '40px'
+                                    }}
+                                >
+                                    <img
+                                        src="./img/img_ballmachine.png"
+                                        alt="发球机"
+                                        width="40"
+                                        height="40"
+                                        style={{
+                                            display: 'block',
+                                            transformOrigin: 'center bottom'
+                                        }}
+                                    />
+                                </div>
+
+                                {/* 箭头 - 简单旋转，连接到发球机 */}
+                                <div
+                                    style={{
+                                        position: 'absolute',
+                                        top: '64px',
+                                        left: '50%',
+                                        width: '2px',
+                                        height: '60px',
+                                        backgroundColor: '#111827',
+                                        transformOrigin: 'center top',
+                                        transition: 'all 0.3s ease',
+                                        transform: `
+                                            translateX(-50%)
+                                            rotate(${rotation}deg)
+                                        `
+                                    }}
+                                >
+                                    {/* 箭头头部 */}
+                                    <div
+                                        style={{
+                                            position: 'absolute',
+                                            bottom: '-8px',
+                                            left: '50%',
+                                            transform: 'translateX(-50%)',
+                                            width: 0,
+                                            height: 0,
+                                            borderLeft: '4px solid transparent',
+                                            borderRight: '4px solid transparent',
+                                            borderTop: '8px solid #111827'
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                            <div className="serve-point left"></div>
+                            <div className="serve-point right"></div>
+                        </div>
+                    </div>
+
+                    <div className="control-panel">
+                        <div className="panel-title">预设训练方案</div>
+                        <div>
+                            <div className="sequence-header">
+                                <div className="sequence-title">Serve Sequence</div>
+                                <div>
+                                    <button className="add-btn" onClick={addGroup}>+</button>
+                                </div>
+                            </div>
+                            <div className="group-buttons">
+                                {groups.map((g, i) => (
+                                    <div key={g.id} className="group-container">
+                                        <button
+                                            className={`group-btn ${i === selectedIndex ? 'active' : ''}`}
+                                            onClick={() => setSelectedIndex(i)}
+                                        >
+                                            {i + 1}
+                                        </button>
+                                        {groups.length > 1 && i === selectedIndex && (
+                                            <button className="delete-btn" onClick={removeSelected}>-</button>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                            <div>
+                                <ParamRow
+                                    label="发球时间间隔 (s)"
+                                    min={1}
+                                    max={6}
+                                    step={0.5}
+                                    value={selectedGroup.interval}
+                                    onChange={(v) => updateSelected({ interval: v })}
+                                    format={(v) => v.toFixed(1)}
+                                />
+                                <ParamRow
+                                    label="上发球轮转速 (rpm)"
+                                    min={2000}
+                                    max={7000}
+                                    step={500}
+                                    value={selectedGroup.upperRpm}
+                                    onChange={(v) => updateSelected({ upperRpm: v })}
+                                    format={(v) => `${v} rpm`}
+                                />
+                                <ParamRow
+                                    label="下发球轮转速 (rpm)"
+                                    min={2000}
+                                    max={7000}
+                                    step={500}
+                                    value={selectedGroup.lowerRpm}
+                                    onChange={(v) => updateSelected({ lowerRpm: v })}
+                                    format={(v) => `${v} rpm`}
+                                />
+                                <ParamRow
+                                    label="俯仰角度 (°)"
+                                    min={20}
+                                    max={40}
+                                    step={2}
+                                    value={selectedGroup.pitch}
+                                    onChange={(v) => updateSelected({ pitch: v })}
+                                    format={(v) => `${v}°`}
+                                />
+                                <ParamRow
+                                    label="发球方向 (°)"
+                                    min={-50}
+                                    max={50}
+                                    step={5}
+                                    value={selectedGroup.direction}
+                                    onChange={(v) => updateSelected({ direction: v })}
+                                    format={(v) => `${v}°`}
+                                />
+                                <div style={{ marginTop: '12px' }}>
+                                    <button
+                                        className={`start-btn ${running ? 'stop' : ''}`}
+                                        onClick={toggleRun}
+                                    >
+                                        {running ? "⏸ Stop" : "⏵ Start"}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="nav-panel">
+                        <nav className="nav-tabs">
+                            <button
+                                className={`nav-tab ${nav === "rally" ? 'active' : ''}`}
+                                onClick={() => setNav("rally")}
+                            >
+                                Rally
+                            </button>
+                            <button
+                                className={`nav-tab ${nav === "ball-machine" ? 'active' : ''}`}
+                                onClick={() => setNav("ball-machine")}
+                            >
+                                Ball Machine
+                            </button>
+                            <button
+                                className={`nav-tab ${nav === "training" ? 'active' : ''}`}
+                                onClick={() => setNav("training")}
+                            >
+                                Training
+                            </button>
+                            <button
+                                className={`nav-tab ${nav === "me" ? 'active' : ''}`}
+                                onClick={() => setNav("me")}
+                            >
+                                Me
+                            </button>
+                        </nav>
+                    </div>
+                </div>
+            );
+        }
+
+        function ParamRow({ label, min, max, step, value, onChange, format }) {
+            return (
+                <div className="parameter-row">
+                    <div className="parameter-header">
+                        <div className="parameter-label">{label}</div>
+                        <div className="parameter-value">{format ? format(value) : value}</div>
+                    </div>
+                    <input
+                        type="range"
+                        className="parameter-slider"
+                        min={min}
+                        max={max}
+                        step={step}
+                        value={value}
+                        onChange={(e) => onChange(Number(e.target.value))}
+                    />
+                </div>
+            );
+        }
+
+        ReactDOM.render(<BallMachineUI />, document.getElementById('root'));
+    </script>
+</body>
+</html>

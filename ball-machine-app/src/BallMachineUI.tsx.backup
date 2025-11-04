@@ -1,0 +1,686 @@
+import React, { useState } from "react";
+
+// 球组数据结构（内部 id 用于稳定性，显示序号使用数组索引+1）
+const defaultGroup = (id: number) => ({
+  id,
+  interval: 2, // s, 1-6 step 0.5
+  upperRpm: 3500, // 2000-7000 step 500
+  lowerRpm: 3500, // 2000-7000
+  pitch: 30, // 20-40 step 2
+  direction: 0, // -50..50 step 5
+});
+
+interface Group {
+  id: number;
+  interval: number;
+  upperRpm: number;
+  lowerRpm: number;
+  pitch: number;
+  direction: number;
+}
+
+export default function BallMachineUI() {
+  const [groups, setGroups] = useState<Group[]>([]);
+  // selectedIndex 用于保证显示编号为 1,2,3...（基于数组位置）
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [running, setRunning] = useState(false);
+  const [nav, setNav] = useState("ball-machine");
+
+  // 安全取值 - 如果没有选中球组，使用默认值显示参数
+  const selectedGroup = groups[selectedIndex] || {
+    interval: 2,
+    upperRpm: 3500,
+    lowerRpm: 3500,
+    pitch: 30,
+    direction: 0,
+  };
+
+  function addGroup() {
+    if (groups.length >= 14) {
+      // 最多支持14个球组
+      return;
+    }
+    const newGroups = [...groups, defaultGroup(Date.now())];
+    setGroups(newGroups);
+    setSelectedIndex(newGroups.length - 1);
+  }
+
+  function removeSelected() {
+    if (groups.length === 0) return;
+    const newGroups = groups.filter((_, i) => i !== selectedIndex);
+    setGroups(newGroups);
+    // 更新选中索引
+    if (newGroups.length === 0) {
+      setSelectedIndex(-1);
+    } else {
+      const newIndex = Math.min(selectedIndex, Math.max(0, newGroups.length - 1));
+      setSelectedIndex(newIndex);
+    }
+  }
+
+  function clearAll() {
+    setGroups([]);
+    setSelectedIndex(-1);
+  }
+
+  function updateSelected(partial: Partial<Group>) {
+    setGroups(groups.map((g, i) => (i === selectedIndex ? { ...g, ...partial } : g)));
+  }
+
+  
+  // 简易开始/停止逻辑
+  function toggleRun() {
+    setRunning(!running);
+  }
+
+  return (
+    <div style={{
+      minHeight: '100vh',
+      backgroundColor: '#f9fafb',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      padding: '16px',
+      color: '#1f2937'
+    }}>
+      {/* 顶部示意图 */}
+      <div style={{ width: '100%', maxWidth: '448px', marginTop: '8px' }}>
+        <div style={{
+          position: 'relative',
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+          padding: '16px'
+        }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '8px'
+          }}>
+            <button style={{
+              padding: '4px 12px',
+              backgroundColor: '#e5e7eb',
+              borderRadius: '4px',
+              border: 'none',
+              cursor: 'pointer'
+            }}>Disconnect</button>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <div style={{
+              position: 'relative',
+              width: '288px',
+              height: '256px',
+              backgroundColor: '#bbf7d0',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              {/* 网线（中线） */}
+              <div style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                height: '4px',
+                backgroundColor: 'black'
+              }}></div>
+
+              {/* 左边线 */}
+              <div style={{
+                position: 'absolute',
+                left: '32px',
+                top: '24px',
+                bottom: '24px',
+                width: '2px',
+                backgroundColor: 'white',
+                opacity: 0.9
+              }}></div>
+
+              {/* 右边线 */}
+              <div style={{
+                position: 'absolute',
+                right: '32px',
+                top: '24px',
+                bottom: '24px',
+                width: '2px',
+                backgroundColor: 'white',
+                opacity: 0.9
+              }}></div>
+
+              {/* 底线（上/下） - 网球场应有两条底线 */}
+              <div style={{
+                position: 'absolute',
+                left: '32px',
+                right: '32px',
+                top: '24px',
+                height: '2px',
+                backgroundColor: 'white',
+                opacity: 0.9
+              }}></div>
+              <div style={{
+                position: 'absolute',
+                left: '32px',
+                right: '32px',
+                bottom: '24px',
+                height: '2px',
+                backgroundColor: 'white',
+                opacity: 0.9
+              }}></div>
+
+              {/* 发球线/服务线（靠近中场的两条线） */}
+              <div style={{
+                position: 'absolute',
+                left: '32px',
+                right: '32px',
+                top: '80px',
+                height: '2px',
+                backgroundColor: 'white',
+                opacity: 0.9
+              }}></div>
+              <div style={{
+                position: 'absolute',
+                left: '32px',
+                right: '32px',
+                bottom: '80px',
+                height: '2px',
+                backgroundColor: 'white',
+                opacity: 0.9
+              }}></div>
+
+              {/* 中心服务线（将发球区分左右的垂直线）- 延长对齐发球线 */}
+              <div style={{
+                position: 'absolute',
+                top: '80px',
+                bottom: '80px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                width: '2px',
+                backgroundColor: 'white',
+                opacity: 0.9
+              }}></div>
+
+              {/* 发球机 3D旋转容器 */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '24px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  transformStyle: 'preserve-3d',
+                  perspective: '1000px'
+                }}
+              >
+                {/* 发球机图标 - Y轴旋转 */}
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    transform: `rotateY(${rotation}deg)`,
+                    transformOrigin: 'center bottom',
+                    transition: 'transform 0.3s ease',
+                    width: '40px',
+                    height: '40px'
+                  }}
+                >
+                  <img
+                    src="/img_ballmachine.png"
+                    alt="发球机"
+                    width="40"
+                    height="40"
+                    style={{
+                      display: 'block',
+                      transformOrigin: 'center bottom'
+                    }}
+                  />
+                </div>
+
+                {/* 所有球组的箭头 */}
+                {groups.map((g, i) => {
+                  const groupRotation = -g.direction;
+                  const isSelected = i === selectedIndex;
+
+                  // 计算箭头长度：基于转速 (2000-7000rpm 映射到 80-140px)
+                  const avgRpm = (g.upperRpm + g.lowerRpm) / 2;
+                  const rpmLength = 80 + ((avgRpm - 2000) / 5000) * 60; // 80-140px based on RPM
+
+                  // 根据俯仰角度调整长度 (20-40度，越高角度 = 箭头越短)
+                  // 最大角度(40度)时减少30%长度
+                  const pitchFactor = 1 - ((g.pitch - 20) / 20) * 0.3; // 0.7 to 1.0 factor
+                  const arrowLength = rpmLength * pitchFactor;
+
+                  return (
+                    <div key={g.id}>
+                      {/* 箭头 */}
+                      <div
+                        style={{
+                          position: 'absolute',
+                          top: '40px',
+                          left: '50%',
+                          width: isSelected ? '3px' : '2px',
+                          height: `${arrowLength}px`,
+                          backgroundColor: isSelected ? '#059669' : '#d1d5db',
+                          transformOrigin: 'top center',
+                          transition: 'all 0.3s ease',
+                          transform: `
+                            translateX(-50%)
+                            rotate(${groupRotation}deg)
+                          `,
+                          zIndex: isSelected ? 10 : 1,
+                          opacity: isSelected ? 1 : 0.7
+                        }}
+                      >
+                        {/* 箭头头部 */}
+                        <div
+                          style={{
+                            position: 'absolute',
+                            bottom: '-8px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            width: 0,
+                            height: 0,
+                            borderLeft: isSelected ? '5px solid transparent' : '4px solid transparent',
+                            borderRight: isSelected ? '5px solid transparent' : '4px solid transparent',
+                            borderTop: isSelected ? '10px solid #059669' : '8px solid #d1d5db'
+                          }}
+                        />
+                        {/* 球组编号圆形标签 */}
+                        <div
+                          style={{
+                            position: 'absolute',
+                            bottom: '-20px',
+                            left: '50%',
+                            transform: `translateX(-50%) rotate(${-groupRotation}deg)`,
+                            width: '18px',
+                            height: '18px',
+                            borderRadius: '50%',
+                            backgroundColor: isSelected ? '#059669' : '#6b7280',
+                            color: 'white',
+                            fontSize: '9px',
+                            fontWeight: isSelected ? 'bold' : 'normal',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            zIndex: isSelected ? 11 : 2,
+                            boxShadow: isSelected ? '0 2px 4px rgba(5, 150, 105, 0.3)' : '0 1px 2px rgba(0, 0, 0, 0.1)',
+                            border: '2px solid rgba(255, 255, 255, 0.8)'
+                          }}
+                        >
+                          {i + 1}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* 左右发球点（示意） */}
+              <div style={{
+                position: 'absolute',
+                left: '4px',
+                top: '50%',
+                transform: 'translateY(-50%)'
+              }}>
+                <div style={{
+                  width: '24px',
+                  height: '24px',
+                  borderRadius: '50%',
+                  backgroundColor: 'black'
+                }}></div>
+              </div>
+              <div style={{
+                position: 'absolute',
+                right: '4px',
+                top: '50%',
+                transform: 'translateY(-50%)'
+              }}>
+                <div style={{
+                  width: '24px',
+                  height: '24px',
+                  borderRadius: '50%',
+                  backgroundColor: 'black'
+                }}></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 中部球区域与球组控制 */}
+        <div style={{
+          marginTop: '16px',
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+          padding: '16px'
+        }}>
+          <div style={{
+            textAlign: 'center',
+            padding: '12px',
+            borderRadius: '6px',
+            backgroundColor: '#fdf2f8',
+            color: '#374151'
+          }}>预设训练方案</div>
+
+          <div style={{ marginTop: '16px' }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: '8px'
+            }}>
+              <div style={{ fontSize: '14px', fontWeight: '500' }}>Serve Sequence</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <button
+                  onClick={clearAll}
+                  disabled={groups.length === 0}
+                  style={{
+                    padding: '4px 12px',
+                    backgroundColor: groups.length === 0 ? '#f9fafb' : '#fef2f2',
+                    border: groups.length === 0 ? '1px solid #e5e7eb' : '1px solid #fecaca',
+                    borderRadius: '6px',
+                    fontSize: '12px',
+                    color: groups.length === 0 ? '#9ca3af' : '#dc2626',
+                    cursor: groups.length === 0 ? 'not-allowed' : 'pointer',
+                    boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+                  }}
+                  title="清除所有球组"
+                >
+                  一键清除
+                </button>
+                <button
+                  onClick={addGroup}
+                  disabled={groups.length >= 14}
+                  style={{
+                    padding: '4px 12px',
+                    backgroundColor: groups.length >= 14 ? '#f9fafb' : 'white',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '9999px',
+                    boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                    fontSize: '20px',
+                    cursor: groups.length >= 14 ? 'not-allowed' : 'pointer'
+                  }}
+                  title="Add group"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            {/* 球组区域：无球组时显示提醒，有球组时显示球组编号 */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: groups.length === 0 ? '1fr' : 'repeat(7, 1fr)',
+              gridTemplateRows: groups.length === 0 ? '1fr' : 'repeat(2, 1fr)',
+              gap: '12px',
+              alignItems: 'center',
+              marginBottom: '16px',
+              justifyItems: 'center',
+              minHeight: '96px'
+            }}>
+              {groups.length === 0 ? (
+                /* 无球组时的提醒卡片 */
+                <div style={{
+                  textAlign: 'center',
+                  padding: '20px',
+                  color: '#9ca3af',
+                  fontSize: '16px',
+                  backgroundColor: '#f9fafb',
+                  borderRadius: '8px',
+                  border: '1px dashed #e5e7eb',
+                  width: 'calc(100% - 15px)',
+                  height: '81px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <div style={{ marginBottom: '8px' }}>🎾</div>
+                  <div>点击 + 按钮添加第一个球</div>
+                </div>
+              ) : (
+                /* 有球组时显示球组编号 */
+                groups.map((g, i) => (
+                  <div key={g.id} style={{ position: 'relative' }}>
+                    <button
+                      onClick={() => setSelectedIndex(i)}
+                      style={{
+                        width: '40px',
+                        height: '40px',
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                        backgroundColor: i === selectedIndex ? 'white' : '#f3f4f6',
+                        border: i === selectedIndex ? '2px solid #34d399' : 'none',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      {i + 1}
+                    </button>
+
+                    {/* 删除标识：当该编号被选中时显示在右上角 */}
+                    {i === selectedIndex && (
+                      <button
+                        onClick={removeSelected}
+                        style={{
+                          position: 'absolute',
+                          top: '-8px',
+                          right: '-8px',
+                          width: '24px',
+                          height: '24px',
+                          borderRadius: '50%',
+                          backgroundColor: '#fef2f2',
+                          color: '#dc2626',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '12px',
+                          boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                          cursor: 'pointer',
+                          border: 'none'
+                        }}
+                        title="删除当前球组"
+                      >
+                        -
+                      </button>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* 参数区域 - 始终显示 */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <ParamRow
+                label="发球方向 (°)"
+                min={-50}
+                max={50}
+                step={5}
+                value={selectedGroup.direction}
+                onChange={(v) => {
+                  if (selectedIndex >= 0) {
+                    updateSelected({ direction: v });
+                  }
+                }}
+                format={(v) => `${v}°`}
+              />
+
+              <ParamRow
+                label="上发球轮转速 (rpm)"
+                min={2000}
+                max={7000}
+                step={500}
+                value={selectedGroup.upperRpm}
+                onChange={(v) => {
+                  if (selectedIndex >= 0) {
+                    updateSelected({ upperRpm: v });
+                  }
+                }}
+                format={(v) => `${v} rpm`}
+              />
+
+              <ParamRow
+                label="下发球轮转速 (rpm)"
+                min={2000}
+                max={7000}
+                step={500}
+                value={selectedGroup.lowerRpm}
+                onChange={(v) => {
+                  if (selectedIndex >= 0) {
+                    updateSelected({ lowerRpm: v });
+                  }
+                }}
+                format={(v) => `${v} rpm`}
+              />
+
+              <ParamRow
+                label="俯仰角度 (°)"
+                min={20}
+                max={40}
+                step={2}
+                value={selectedGroup.pitch}
+                onChange={(v) => {
+                  if (selectedIndex >= 0) {
+                    updateSelected({ pitch: v });
+                  }
+                }}
+                format={(v) => `${v}°`}
+              />
+
+              <ParamRow
+                label="发球时间间隔 (s)"
+                min={1}
+                max={6}
+                step={0.5}
+                value={selectedGroup.interval}
+                onChange={(v) => {
+                  if (selectedIndex >= 0) {
+                    updateSelected({ interval: v });
+                  }
+                }}
+                format={(v) => v.toFixed(1)}
+              />
+
+              {/* Start/Stop 按钮 */}
+              <div style={{ marginTop: '12px' }}>
+                <button
+                  onClick={toggleRun}
+                  disabled={groups.length === 0}
+                  style={{
+                    width: '100%',
+                    padding: '16px',
+                    borderRadius: '12px',
+                    color: groups.length === 0 ? '#9ca3af' : 'white',
+                    fontSize: '18px',
+                    fontWeight: '500',
+                    backgroundColor: groups.length === 0 ? '#f3f4f6' : (running ? '#dc2626' : 'black'),
+                    border: 'none',
+                    cursor: groups.length === 0 ? 'not-allowed' : 'pointer'
+                  }}
+                >
+                  {running ? "⏸ Stop" : "⏵ Start"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 底部导航 */}
+        <div style={{
+          marginTop: '24px',
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+          padding: '12px'
+        }}>
+          <nav style={{ display: 'flex', justifyContent: 'space-around' }}>
+            <NavItem label="Rally" keyName="rally" active={nav === "rally"} onClick={() => setNav("rally")} />
+            <NavItem label="Ball Machine" keyName="ball-machine" active={nav === "ball-machine"} onClick={() => setNav("ball-machine")} />
+            <NavItem label="Training" keyName="training" active={nav === "training"} onClick={() => setNav("training")} />
+            <NavItem label="Me" keyName="me" active={nav === "me"} onClick={() => setNav("me")} />
+          </nav>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface ParamRowProps {
+  label: string;
+  min: number;
+  max: number;
+  step: number;
+  value: number;
+  onChange: (value: number) => void;
+  format?: (value: number) => string;
+}
+
+function ParamRow({ label, min, max, step, value, onChange, format }: ParamRowProps) {
+  return (
+    <div>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        marginBottom: '4px'
+      }}>
+        <div style={{ fontSize: '14px' }}>{label}</div>
+        <div style={{ fontSize: '14px', fontWeight: '500' }}>
+          {format ? format(value) : value}
+        </div>
+      </div>
+      <input
+        type="range"
+        style={{
+          width: '100%',
+          WebkitAppearance: 'none',
+          appearance: 'none',
+          height: '6px',
+          borderRadius: '3px',
+          background: '#e5e7eb',
+          outline: 'none'
+        }}
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(e) => {
+          const v = Number(e.target.value);
+          onChange(v);
+        }}
+      />
+    </div>
+  );
+}
+
+interface NavItemProps {
+  label: string;
+  keyName: string;
+  active: boolean;
+  onClick: () => void;
+}
+
+function NavItem({ label, keyName, active, onClick }: NavItemProps) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        flex: 1,
+        padding: '8px',
+        textAlign: 'center',
+        color: active ? '#059669' : '#6b7280',
+        fontWeight: active ? '600' : 'normal',
+        border: 'none',
+        backgroundColor: 'transparent',
+        cursor: 'pointer',
+        fontSize: '14px'
+      }}
+    >
+      <div>{label}</div>
+    </button>
+  );
+}
