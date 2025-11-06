@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网球距离识别</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <h1>网球距离识别</h1>
+    </header>
+
+    <main class="container">
+        <!-- 网球距离测量区域 -->
+        <section class="card measurement-section">
+            <h2>网球距离测量</h2>
+            <div class="description">
+                <p>说明:</p>
+                <p>请先将ACEMATE正对球场放置于底线，点击"开始测量"后手持网球移动，网球坐标实时更新，对比参考坐标确认测量是否准确。</p>
+            </div>
+
+            <div class="realtime-coords">
+                <h3>网球实时坐标:</h3>
+                <div class="coords-display">
+                    <p>深度: <span id="realtime-depth">X.XX</span> m</p>
+                    <p>高度: <span id="realtime-height">X.XX</span> m</p>
+                    <p>左右: <span id="realtime-left-right">X.XX</span> m</p>
+                </div>
+            </div>
+
+            <div class="reference-coords">
+                <h3>参考坐标:</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>参考位置</th>
+                            <th>深度</th>
+                            <th>高度</th>
+                            <th>左右</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>同侧发球线中央</td>
+                            <td>5.48±0.3m</td>
+                            <td></td>
+                            <td>0±</td>
+                        </tr>
+                        <tr>
+                            <td>网球网中央</td>
+                            <td>12±0.5m</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>对侧发球线中央</td>
+                            <td>18.6±0.7m</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>底线中央</td>
+                            <td>24±1m</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <button class="primary-button" id="start-measurement-button">开始测量</button>
+        </section>
+
+        <!-- 相机校准区域 -->
+        <section class="card calibration-section">
+            <h2>相机校准</h2>
+            <div class="hint">
+                <p>提示: 当网球实时坐标与参考坐标差距过大时才需要相机校准，点击确认校准后请按照提示摆放ACEMATE。</p>
+            </div>
+            <button class="primary-button" id="confirm-calibration-button">确认校准</button>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

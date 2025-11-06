@@ -1,0 +1,497 @@
+import React, { useState, useEffect } from 'react';
+
+interface ManualSection {
+  id: string;
+  title: string;
+  content: {
+    title: string;
+    description: string;
+    image?: string;
+  }[];
+}
+
+export function UserManual({ onBack }: { onBack: () => void }) {
+  const [activeSection, setActiveSection] = useState('safety');
+  const [expandedSubsection, setExpandedSubsection] = useState<string | null>(null);
+  const [nav, setNav] = useState("me");
+  const [showRobotImage, setShowRobotImage] = useState(true);
+
+  const handleNavClick = (page: string) => {
+    setNav(page);
+    // 可以根据需要调用 onBack 或其他导航处理
+  };
+
+  const manualSections: ManualSection[] = [
+    {
+      id: 'quickstart',
+      title: '使用前提醒',
+      content: [
+        {
+          title: '重要提醒',
+          description: '了解如何快速安装和启动您的ACEMATE机器人，请勿在非标准场地使用Rally模式，非标准场地请使用BallMachine模式。'
+        }
+      ]
+    },
+    {
+      id: 'device',
+      title: '设备使用指南',
+      content: [
+        {
+          title: '开关机',
+          description: '正常按下开关按钮即可开/关机，开机过程中尽量保持机器静止，机器开机过程会红灯闪烁，机器完成自检后指示灯变为绿/紫色常亮，表明机器正常开机，即可使用APP连接设备蓝牙开始使用。'
+        },
+        {
+          title: '安装接球网',
+          description: '在伸缩接球网过程中，请勿直接将某一根伸缩杆直接伸缩到最顶端，需将四个接球伸缩杆依次伸缩至顶端；注意伸缩过程中不要让球网钩住内部的拨杆和螺杆。'
+        },
+        {
+          title: '安全检查',
+          description: '使用ACEMATE前请确保以下内容：\n• 电池电量充足；\n• 周围环境安全；\n• 场地平整、无障碍物；\n• 检查设备各部件是否完好，确认发球口无堵塞、轮子正常行走。'
+        },
+        {
+          title: '电池充电',
+          description: '可直接使用充电器插入机器人开关下方充电口进行充电，也可将电池从电池仓取出充电。'
+        }
+      ]
+    },
+    {
+      id: 'app',
+      title: 'APP页面说明',
+      content: [
+        {
+          title: 'Rally模式页面',
+          description: '状态显示栏：\n• 左上角为蓝牙连接设备状态，开机后连接Acemate_XXXX设备即可控制；\n• 右上角为Acemate视觉识别状态，当机器识别到位置正确后会由"Incorrect Position"变为"Correct Position"。\n\n球场展示区域：\n• 依次点击球场落点编号设置不同的落点顺序，机器落点的准确性和网球、场地等类型相关性较高，请尽量保证网球的一致性和在标准网球场使用。\n\n上下旋和高度展示区域：\n• 可视化机器击球的上下旋和过网高度，可通过速度、上下旋滑杆进行调整。\n\n球组设置区域：\n• 选择球组的上下旋和球速\n\n小车设置卡片：\n• Car Speed设置小车的速度（由于场地材质的差异，如果机器发射球的左右偏差较大，可适当降低车速）\n• Machine Vertical Position用于调整机器在球场纵向位置，可根据不同的练习需求，结合落点设置，实现小场对拉（1，2号Position），底线对拉（4、5号position）。\n• Machine Horizontal Position用于调整机器在球场纵向位置，可根据不同的练习需求，结合落点设置，实现不同线路组合的练习。'
+        },
+        {
+          title: 'Ball Machine模式页面',
+          description: '用于设置传统发球机模式，支持用户将机器放置在不同的位置和场地，选择每个球的击球参数。\n\n状态显示栏：\n• 左上角为蓝牙连接设备状态，开机后连接Acemate_XXXX设备即可控制；\n\n球场展示区域：\n• 此区域会依据用户设置的击球参数动态展示每个球的击球方向、深度、高度、上下旋以及整个球组的击球顺序\n\n预设训练方案：\n• 支持用户选择预设的训练方案\n\n球组选择：\n• 发球时间间隔，设置整个球组球与球之间的时间间隔，每个球之间的时间间隔相同\n• 点击"+"按钮增加球，选中球编号，设置每个球的发球方向、速度、旋转、高度\n• 点击"保存方案"按钮可将当前的设置保存并命名为自己的方案'
+        },
+        {
+          title: 'Training页面',
+          description: 'Training页面用于展示用户与Acemate训练的数据记录，支持大模型分析训练记录，生成对应的训练建议。\n\nAI分析卡片：\n• 利用AI大模型分析一组击球回合内的训练数据，给出相应的训练方案\n\n训练视频卡片：\n• 录制发球机模式下的训练视频\n\n落点分布卡片：\n• 展示正反手击球频率和落点分布\n\n击球数据统计卡片：\n• 统计击球次数、平均击球速度、最大击球速度、平均过网高度、入、出界率'
+        },
+        {
+          title: 'Me页面',
+          description: '状态显示栏：\n• 左上角为蓝牙连接设备状态，开机后连接Acemate_XXXX设备即可控制；\n\n小车遥控器：\n• 用于实现小车前后左右移动和旋转方向\n\nAcemate用户手册\n\n用户反馈：\n• 用户反馈在使用过程中碰到的问题和联系方式\n\n网球距离测量与相机校正：\n• 当机器接球异常、发球偏差较大时可能需要进行测距和相机校准\n\n机器固件版本：\n• 检查和安装最新的机器固件'
+        }
+      ]
+    },
+    {
+      id: 'suggestions',
+      title: 'APP功能使用建议',
+      content: [
+        {
+          title: 'NTRP 1.0–2.0：入门者阶段',
+          description: '目标：建立击球感觉与稳定性，找到"网球的节奏"\n\n推荐使用模式：发球机模式（固定点出球）\n\n训练方法：\n1. 将机器放置在底线中点位置，使用预设方案的基础定点训练线路，从"左右两侧浅球定点练习"依次进阶至"左右两侧深球定点练习"，练习正反手稳定性，控制击球落点和节奏。\n2. 进一步使用预设训练方案的基础双线训练线路，切换正反手。\n3. 结合App视频回放功能，观察是否始终保持一致的挥拍节奏。\n\nAPP设置方法：\n1. 在Ball Machine页面点击预设训练方案，选择相应的方案\n2. 可以依据自己的需求调整出球速度\n3. 调整俯仰角度控制过网高度\n4. 调整上旋/平击/下旋等击球类型\n5. 调整发球时间间隔改变击球节奏'
+        },
+        {
+          title: 'NTRP 2.0–3.0：基础稳定阶段',
+          description: '目标：形成主动击球意识与方向控制能力\n\n推荐使用模式：发球机模式 + Rally模式单点训练\n\n训练方法：\n1. 使用发球机模式，将机器放置在底线中点位置，使用预设方案的深浅球组合线路和进阶线路。\n2. 使用Rally模式，将机器放置在中场靠近底线位置（推荐设置Machine Vertical Position 1/2/3，Machine Horizontal Position 5），选择浅落点，设置较低速度，和机器进行小场对拉。\n\nAPP设置方法：\n1. 在Ball Machine页面 → 预设方案 →深浅球组合线路/进阶线路，结合难度和自身需求调整发球方向、速度、旋转、俯仰角度、发球时间间隔等参数\n2. 在Rally页面选择单个中路浅落点（3/8/13），调整适合自己的速度，设置Machine Vertical Position 1/2/3，Machine Horizontal Position 5）控制击球落点，实现稳定对拉'
+        },
+        {
+          title: 'NTRP 3.5–4.0：稳定控制阶段',
+          description: '目标：提升旋转掌控与击球质量，形成连续对打节奏\n\n推荐使用模式：Rally模式\n\n训练方法：\n1. 使用Rally模式，将机器放置在底线中点位置（设置Machine Vertical Position 4/5，Machine Horizontal Position 5），选择点位中3–5个点，进行连续对打训练。\n2. 使用Rally模式，将机器放置在底线右侧位置（设置Machine Vertical Position 4/5，Machine Horizontal Position 1/2/3），选择点位中3–5个点，进行连续对打训练。\n\nAPP设置方法：\n1. 打开Rally模式 → 选择训练点位（3–5个）、设置Machine Vertical Position 4/5，Machine Horizontal Position 5；\n2. 调整适当的速度和旋转。'
+        }
+      ]
+    },
+    {
+      id: 'troubleshooting',
+      title: '常见问题',
+      content: [
+        {
+          title: '硬件问题',
+          description: '接球网可以接住球但弹出较多：\n• 请将接球网伸缩至合适的高度，推荐高度为伸缩杆的最高。\n\n转盘堵转：\n• 可能的现象是开启后机器不发球，请在发球机模式下观察机器，确认是否是储球转盘未转动。\n\n发球电机堵转：\n• 可能的现象是开启后机器不发球，请在发球机模式下观察机器，确保储球转盘没有球后观察发球电机是否转动。\n• 查看是否有球卡在上下发球电机中间，如有球，请关闭机器，拆卸机器主体两侧螺丝，提起转球装置取出网球即可。\n\n车轮不转动：\n• 确保机器处于正常开机状态（指示灯为绿色或蓝色），手动控制机器行走。'
+        },
+        {
+          title: '视觉问题',
+          description: '机器人在运行过程中可能碰到以下视觉相关的问题：\n• Rally模式下正常使用过程中突然停止，可能是球场标识线（球场发球线、边线、球网重力带缺失等）不明显导致机器丢失位置，手动移动至正常位置即可\n• Rally模式下接球效果不佳，观察球场环境中是否存在类似网球（黄色、圆形）的图像或物体，请进行移除或者遮挡\n• 机器突然移动向某个方向，可能是有网球或网球类似物在机器人视线中移动，请避免此类情况'
+        }
+      ]
+    },
+    {
+      id: 'maintenance',
+      title: '维护与保养',
+      content: [
+        {
+          title: '日常维护',
+          description: '为了保持ACEMATE的最佳性能和延长使用寿命，建议定期进行以下维护工作：\n• 使用后清洁设备表面和发球口\n• 检查并清理接球网\n• 定期检查电池电量和充电状态\n• 检查各部件是否松动或磨损\n• 存放时保持干燥通风的环境'
+        }
+      ]
+    }
+  ];
+
+  const toggleSubsection = (subsectionId: string) => {
+    setExpandedSubsection(expandedSubsection === subsectionId ? null : subsectionId);
+  };
+
+  // 添加滚动监听来隐藏机器人图片（简化版，防抖动）
+  useEffect(() => {
+    let isScrolling = false;
+    let scrollEndTimer: NodeJS.Timeout | null = null;
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      // 标记正在滚动
+      isScrolling = true;
+
+      // 清除之前的定时器
+      if (scrollEndTimer) {
+        clearTimeout(scrollEndTimer);
+      }
+
+      // 设置新的定时器，在滚动结束后更新状态
+      scrollEndTimer = setTimeout(() => {
+        isScrolling = false;
+
+        // 简单的阈值判断：滚动超过150px就隐藏图片
+        if (currentScrollY > 150) {
+          setShowRobotImage(false);
+        } else {
+          setShowRobotImage(true);
+        }
+      }, 150); // 150ms延迟确保滚动结束
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    // 清理函数
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (scrollEndTimer) {
+        clearTimeout(scrollEndTimer);
+      }
+    };
+  }, []); // 移除不必要的依赖项
+
+  
+  interface NavItemProps {
+    label: string;
+    keyName: string;
+    active: boolean;
+    onClick: () => void;
+  }
+
+  function NavItem({ label, keyName, active, onClick }: NavItemProps) {
+    return (
+      <button
+        onClick={onClick}
+        style={{
+          flex: 1,
+          padding: '8px',
+          textAlign: 'center',
+          color: active ? '#059669' : '#6b7280',
+          fontWeight: active ? '600' : 'normal',
+          border: 'none',
+          backgroundColor: 'transparent',
+          cursor: 'pointer',
+          fontSize: '14px'
+        }}
+      >
+        <div>{label}</div>
+      </button>
+    );
+  }
+
+  return (
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #1a4d2e 0%, #2d5a3d 50%, #1a4d2e 100%)',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      padding: '16px',
+      color: 'white',
+      fontFamily: 'Arial, sans-serif'
+    }}>
+      <div style={{ width: '100%', maxWidth: '448px', marginTop: '8px' }}>
+        {/* 顶部导航栏 */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '24px',
+          padding: '0 8px'
+        }}>
+          <button
+            onClick={onBack}
+            style={{
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              border: 'none',
+              color: 'white',
+              fontSize: '16px',
+              cursor: 'pointer',
+              padding: '8px 16px',
+              borderRadius: '20px',
+              backdropFilter: 'blur(10px)'
+            }}
+          >
+            ← 返回
+          </button>
+          <h1 style={{ fontSize: '20px', fontWeight: 'bold', margin: 0, textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
+            用户手册
+          </h1>
+          <div style={{ width: '80px' }}></div>
+        </div>
+
+        {/* 用户手册内容区域 - 左右分栏布局 */}
+        <div style={{
+          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          borderRadius: '20px',
+          padding: '24px',
+          marginBottom: '24px',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
+          backdropFilter: 'blur(10px)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px'
+        }}>
+          <h2 style={{
+            fontSize: '18px',
+            fontWeight: '600',
+            color: '#1a4d2e',
+            marginBottom: '8px',
+            textAlign: 'center'
+          }}>ACEMATE用户手册</h2>
+
+          {/* 机器人图片展示区域 - 缩小并支持滚动隐藏 */}
+          <div style={{
+            backgroundColor: '#f8fafc',
+            borderRadius: '12px',
+            padding: showRobotImage ? '16px' : '0',
+            marginBottom: showRobotImage ? '16px' : '0',
+            border: showRobotImage ? '2px solid #e2e8f0' : '2px solid transparent',
+            textAlign: 'center',
+            transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+            opacity: showRobotImage ? 1 : 0,
+            transform: showRobotImage ? 'translateY(0) scale(1)' : 'translateY(-10px) scale(0.95)',
+            maxHeight: showRobotImage ? '350px' : '0',
+            overflow: 'hidden'
+          }}>
+            <div style={{
+                width: '100%',
+                height: '120px',
+                backgroundColor: '#f1f5f9',
+                borderRadius: '8px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginBottom: '12px',
+                border: '1px dashed #cbd5e1',
+                position: 'relative',
+                overflow: 'hidden'
+              }}>
+                <img
+                  src={`${process.env.PUBLIC_URL}/acemate-robot.png`}
+                  alt="ACEMATE网球机器人"
+                  style={{
+                    maxWidth: '80%',
+                    maxHeight: '80%',
+                    objectFit: 'contain',
+                    borderRadius: '6px'
+                  }}
+                  onError={(e) => {
+                    // 如果图片加载失败，显示占位符
+                    e.currentTarget.style.display = 'none';
+                    const parent = e.currentTarget.parentElement;
+                    if (parent) {
+                      parent.innerHTML = `
+                        <div style="
+                          display: flex;
+                          flex-direction: column;
+                          align-items: center;
+                          justify-content: center;
+                          color: #64748b;
+                          font-size: 14px;
+                          text-align: center;
+                          padding: 20px;
+                        ">
+                          <div style="
+                            font-size: 36px;
+                            margin-bottom: 6px;
+                            opacity: 0.5;
+                          ">🤖</div>
+                          <div>ACEMATE</div>
+                        </div>
+                      `;
+                    }
+                  }}
+                />
+              </div>
+              <div style={{
+                fontSize: '13px',
+                color: '#374151',
+                lineHeight: '1.4',
+                textAlign: 'center'
+              }}>
+                <div style={{ fontWeight: '600', color: '#1a4d2e', marginBottom: '6px' }}>
+                  ACEMATE 网球机器人
+                </div>
+                <div style={{ fontSize: '12px', color: '#64748b' }}>
+                  专业的网球训练伴侣
+                </div>
+              </div>
+          </div>
+
+          {/* 主要内容区域 - 左右分栏，调整比例 */}
+          <div style={{
+            display: 'flex',
+            gap: '20px',
+            minHeight: '500px'
+          }}>
+            {/* 左侧导航栏 - 缩小宽度，调整字体 */}
+            <div style={{
+              flex: '0 0 100px',
+              backgroundColor: '#f8fafc',
+              borderRadius: '12px',
+              padding: '16px 8px',
+              border: '1px solid #e2e8f0'
+            }}>
+              <nav style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                {manualSections.map((section) => (
+                  <button
+                    key={section.id}
+                    onClick={() => setActiveSection(section.id)}
+                    style={{
+                      width: '100%',
+                      padding: '10px 6px',
+                      backgroundColor: activeSection === section.id ? '#22c55e' : 'transparent',
+                      border: 'none',
+                      borderRadius: '8px',
+                      color: activeSection === section.id ? 'white' : '#374151',
+                      fontSize: '11px',
+                      fontWeight: activeSection === section.id ? '600' : '500',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      textAlign: 'center',
+                      lineHeight: '1.4',
+                      minHeight: '36px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    {section.title}
+                  </button>
+                ))}
+              </nav>
+            </div>
+
+            {/* 右侧内容区域 - 扩大比例 */}
+            <div style={{
+              flex: '1',
+              backgroundColor: '#f8fafc',
+              borderRadius: '12px',
+              padding: '20px',
+              border: '1px solid #e2e8f0',
+              overflowY: 'auto'
+            }}>
+              {manualSections.map((section) => (
+                activeSection === section.id && (
+                  <div key={section.id}>
+                    <h3 style={{
+                      fontSize: '18px',
+                      fontWeight: '600',
+                      color: '#1a4d2e',
+                      marginBottom: '20px'
+                    }}>
+                      {section.title}
+                    </h3>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                      {section.content.map((item, index) => {
+                        const subsectionId = `${section.id}-${index}`;
+                        const isExpanded = expandedSubsection === subsectionId;
+
+                        return (
+                          <div
+                            key={index}
+                            style={{
+                              backgroundColor: 'white',
+                              borderRadius: '8px',
+                              overflow: 'hidden',
+                              border: '1px solid #e5e7eb',
+                              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+                            }}
+                          >
+                            <button
+                              onClick={() => toggleSubsection(subsectionId)}
+                              style={{
+                                width: '100%',
+                                padding: '14px 16px',
+                                backgroundColor: 'transparent',
+                                border: 'none',
+                                textAlign: 'left',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center'
+                              }}
+                            >
+                              <h4 style={{
+                                fontSize: '15px',
+                                fontWeight: '600',
+                                color: '#1a4d2e',
+                                margin: 0
+                              }}>
+                                {item.title}
+                              </h4>
+                              <span style={{
+                                fontSize: '12px',
+                                color: '#64748b',
+                                transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                                transition: 'transform 0.2s ease'
+                              }}>
+                                ▼
+                              </span>
+                            </button>
+
+                            {isExpanded && (
+                              <div style={{
+                                padding: '0 16px 16px',
+                                borderTop: '1px solid #e5e7eb'
+                              }}>
+                                <div style={{
+                                  fontSize: '14px',
+                                  lineHeight: '1.6',
+                                  color: '#374151',
+                                  margin: 0,
+                                  whiteSpace: 'pre-wrap'
+                                }}>
+                                  {item.description}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* 添加额外间距来匹配其他页面的内容高度 */}
+        <div style={{ height: '200px' }}></div>
+
+        {/* 底部导航 - 与其他页面完全一致 */}
+        <div style={{
+          marginTop: '24px',
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+          padding: '12px'
+        }}>
+          <nav style={{ display: 'flex', justifyContent: 'space-around' }}>
+            <NavItem label="Rally" keyName="rally" active={nav === "rally"} onClick={() => handleNavClick("rally")} />
+            <NavItem label="Ball Machine" keyName="ball-machine" active={nav === "ball-machine"} onClick={() => handleNavClick("ball-machine")} />
+            <NavItem label="Training" keyName="training" active={nav === "training"} onClick={() => handleNavClick("training")} />
+            <NavItem label="Me" keyName="me" active={nav === "me"} onClick={() => handleNavClick("me")} />
+          </nav>
+        </div>
+      </div>
+    </div>
+  );
+}

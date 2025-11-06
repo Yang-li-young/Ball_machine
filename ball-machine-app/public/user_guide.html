@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网球机器人用户指南</title>
+    <link rel="stylesheet" href="style.css"> <!-- 引入公共样式 -->
+    <link rel="stylesheet" href="guide.css"> <!-- 引入指南页面专属样式 -->
+</head>
+<body>
+    <header class="guide-header">
+        <div class="header-left">
+            <a href="#" class="back-button" aria-label="返回">&lt;</a>
+            <h1>用户指南</h1>
+        </div>
+        <div class="header-right">
+            <button class="icon-button search-button" aria-label="搜索"></button>
+            <button class="icon-button share-button" aria-label="分享"></button>
+        </div>
+    </header>
+
+    <div class="guide-controls">
+        <div class="robot-model-selector">
+            <span id="currentRobotModel">ACEMATE</span>
+            <span class="dropdown-arrow">▼</span>
+        </div>
+        <a href="#" class="view-manual-link">查看用户手册 ></a>
+    </div>
+
+    <!-- 机器人图片区域 -->
+    <div class="robot-hero-image">
+        <img src="https://via.placeholder.com/600x300?text=Tennis+Robot+Image" alt="网球机器人产品图">
+    </div>
+
+    <main class="guide-main-content">
+        <aside class="sidebar-nav">
+            <ul>
+                <li class="active"><a href="#common-recommend">常用推荐</a></li>
+                <li><a href="#device-setup">设备设置</a></li>
+                <li><a href="#training-modes">训练模式</a></li>
+                <li><a href="#remote-control">遥控操作</a></li>
+                <li><a href="#voice-control">语音控制</a></li>
+                <li><a href="#maintenance">维护保养</a></li>
+                <li><a href="#account-binding">账号绑定</a></li>
+                <li><a href="#troubleshooting">故障排除</a></li>
+            </ul>
+        </aside>
+
+        <section class="content-display">
+            <!-- 常用推荐 -->
+            <div id="common-recommend" class="category-section active">
+                <h2>常用推荐</h2>
+                <div class="feature-list">
+                    <article class="feature-item">
+                        <img src="https://via.placeholder.com/100x70?text=Quick+Setup" alt="快速设置">
+                        <div class="item-details">
+                            <h3>快速设置指南</h3>
+                            <p>了解如何快速安装和启动您的ACEMATE机器人。</p>
+                        </div>
+                    </article>
+                    <article class="feature-item">
+                        <img src="https://via.placeholder.com/100x70?text=Basic+Training" alt="基础训练">
+                        <div class="item-details">
+                            <h3>基础训练模式</h3>
+                            <p>如何选择基础模式并进行您的第一次训练。</p>
+                        </div>
+                    </article>
+                    <article class="feature-item">
+                        <img src="https://via.placeholder.com/100x70?text=Battery+Life" alt="电池管理">
+                        <div class="item-details">
+                            <h3>电池管理与充电</h3>
+                            <p>优化电池使用寿命和充电注意事项。</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- 设备设置 -->
+            <div id="device-setup" class="category-section">
+                <h2>设备设置</h2>
+                <div class="feature-list">
+                    <article class="feature-item">
+                        <img src="https://via.placeholder.com/100x70?text=WiFi+Connect" alt="WiFi连接">
+                        <div class="item-details">
+                            <h3>Wi-Fi连接与配置</h3>
+                            <p>将机器人连接到您的Wi-Fi网络进行远程控制和固件更新。</p>
+                        </div>
+                    </article>
+                    <article class="feature-item">
+                        <img src="https://via.placeholder.com/100x70?text=Firmware+Update" alt="固件升级">
+                        <div class="item-details">
+                            <h3>固件升级</h3>
+                            <p>如何检查和安装最新的机器人固件。</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- 训练模式 -->
+            <div id="training-modes" class="category-section">
+                <h2>训练模式</h2>
+                <div class="feature-list">
+                    <article class="feature-item">
+                        <img src="https://via.placeholder.com/100x70?text=Custom+Drills" alt="自定义训练">
+                        <div class="item-details">
+                            <h3>自定义训练计划</h3>
+                            <p>创建和保存您自己的网球训练程序。</p>
+                        </div>
+                    </article>
+                    <article class="feature-item">
+                        <img src="https://via.placeholder.com/100x70?text=Shot+Speed" alt="发球速度">
+                        <div class="item-details">
+                            <h3>调整发球速度和角度</h3>
+                            <p>根据您的需求精确调整球速和出球方向。</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- 遥控操作 -->
+            <div id="remote-control" class="category-section">
+                <h2>遥控操作</h2>
+                <div class="feature-list">
+                    <article class="feature-item">
+                        <img src="https://via.placeholder.com/100x70?text=App+Control" alt="APP控制">
+                        <div class="item-details">
+                            <h3>手机APP遥控</h3>
+                            <p>通过手机APP进行机器人的各项操作。</p>
+                        </div>
+                    </article>
+                    <article class="feature-item">
+                        <img src="https://via.placeholder.com/100x70?text=Wearable+Control" alt="穿戴设备控制">
+                        <div class="item-details">
+                            <h3>穿戴设备控制</h3>
+                            <p>使用智能手表等穿戴设备快捷控制。</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- 语音控制 -->
+            <div id="voice-control" class="category-section">
+                <h2>语音控制</h2>
+                <div class="feature-list">
+                    <article class="feature-item">
+                        <img src="https://via.placeholder.com/100x70?text=Voice+Commands" alt="语音指令">
+                        <div class="item-details">
+                            <h3>常用语音指令</h3>
+                            <p>了解并使用ACEMATE的各项语音控制功能。</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- 维护保养 -->
+            <div id="maintenance" class="category-section">
+                <h2>维护保养</h2>
+                <div class="feature-list">
+                    <article class="feature-item">
+                        <img src="https://via.placeholder.com/100x70?text=Cleaning" alt="清洁">
+                        <div class="item-details">
+                            <h3>日常清洁与存放</h3>
+                            <p>保持机器人良好状态的清洁技巧和存放建议。</p>
+                        </div>
+                    </article>
+                    <article class="feature-item">
+                        <img src="https://via.placeholder.com/100x70?text=Troubleshoot" alt="故障排除">
+                        <div class="item-details">
+                            <h3>常见故障排除</h3>
+                            <p>解决机器人运行时可能遇到的常见问题。</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+            <!-- 账号绑定、故障排除等其他分类可以继续添加 -->
+
+        </section>
+    </main>
+
+    <script src="guide.js"></script>
+</body>
+</html>

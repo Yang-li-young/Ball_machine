@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户反馈</title>
+    <link rel="stylesheet" href="style.css"> <!-- 引入公共样式 -->
+    <link rel="stylesheet" href="feedback.css"> <!-- 引入反馈页面专属样式 -->
+</head>
+<body>
+    <header class="header">
+        <h1>用户反馈</h1>
+    </header>
+
+    <main class="container">
+        <section class="card feedback-form-section">
+            <h2>您的宝贵反馈</h2>
+            <form id="feedbackForm">
+                <div class="form-group">
+                    <label for="problemDescription">问题描述:</label>
+                    <textarea id="problemDescription" rows="8" placeholder="请详细描述您遇到的问题，例如：设备型号、出现问题的场景、具体错误提示等。" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="contactEmail">联系邮箱:</label>
+                    <input type="email" id="contactEmail" placeholder="请输入您的邮箱地址，以便我们与您联系。" required>
+                </div>
+
+                <div class="form-group data-upload-group">
+                    <label>上传设备数据:</label>
+                    <div class="upload-instructions">
+                        <p>请按照以下步骤上传设备数据：</p>
+                        <ol>
+                            <li>将您的手机/电脑连接到设备的Wi-Fi热点。</li>
+                            <li>点击下方的“连接设备并上传数据”按钮。</li>
+                            <li>系统将尝试连接设备并自动传输数据。</li>
+                        </ol>
+                        <p class="upload-status" id="uploadStatus">当前状态: 未连接设备</p>
+                    </div>
+                    <button type="button" class="secondary-button" id="connectAndUploadButton">连接设备并上传数据</button>
+                    <input type="file" id="dataFileInput" style="display: none;" accept=".log,.txt,.json,.csv"> <!-- 隐藏的文件输入，用于模拟选择文件 -->
+                </div>
+
+                <button type="submit" class="primary-button submit-feedback-button">提交反馈</button>
+            </form>
+        </section>
+    </main>
+
+    <script src="feedback.js"></script> <!-- 反馈页面专属脚本 -->
+</body>
+</html>
