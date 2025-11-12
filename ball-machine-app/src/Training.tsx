@@ -114,12 +114,12 @@ export function TrainingPage({ onNavigate }: { onNavigate: (page: string) => voi
           opacity: 0.8
         }} />
 
-        {/* 发球区横线（前发球线） */}
+        {/* 发球区横线（前发球线） - 不超出单打边线 */}
         <div style={{
           position: 'absolute',
-          left: '8%',
+          left: '12%',
           top: '50%',
-          right: '8%',
+          right: '12%',
           height: '2px',
           backgroundColor: '#0369a1',
           transform: 'translateY(-50%)'
@@ -147,16 +147,6 @@ export function TrainingPage({ onNavigate }: { onNavigate: (page: string) => voi
           opacity: 0.8
         }} />
 
-        {/* 网前区标记 - 调整位置 */}
-        <div style={{
-          position: 'absolute',
-          left: '8%',
-          top: '35%',
-          right: '8%',
-          height: '1px',
-          backgroundColor: '#0ea5e9',
-          opacity: 0.5
-        }} />
 
         {/* 底线标记 */}
         <div style={{
