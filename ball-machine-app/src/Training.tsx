@@ -125,7 +125,18 @@ export function TrainingPage({ onNavigate }: { onNavigate: (page: string) => voi
           transform: 'translateY(-50%)'
         }} />
 
-        {/* 中线 - 从网袋示意线延伸到发球线 */}
+        {/* 网袋示意线 - 横向延长至双打边线 */}
+        <div style={{
+          position: 'absolute',
+          left: '8%', // 双打边线位置
+          top: '20%',
+          right: '8%', // 双打边线位置
+          height: '2px',
+          backgroundColor: '#0369a1',
+          opacity: 0.8
+        }} />
+
+        {/* 中线 - 向上延长至网袋示意线 */}
         <div style={{
           position: 'absolute',
           left: '50%',
