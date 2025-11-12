@@ -125,22 +125,33 @@ export function TrainingPage({ onNavigate }: { onNavigate: (page: string) => voi
           transform: 'translateY(-50%)'
         }} />
 
-        {/* 发球区中线 - 只到发球线 */}
+        {/* 中线 - 从网袋示意线延伸到发球线 */}
         <div style={{
           position: 'absolute',
           left: '50%',
-          top: '50%',
-          height: '40%', // 只到发球线，不是整个场地
+          top: '20%', // 网袋示意线位置
+          height: '30%', // 延伸到发球线
           width: '2px',
           backgroundColor: '#0369a1',
-          transform: 'translateX(-50%) translateY(10%)' // 从发球线向下延伸到边界线
+          transform: 'translateX(-50%)'
         }} />
 
-        {/* 网前区标记 */}
+        {/* 网袋示意线 */}
         <div style={{
           position: 'absolute',
           left: '8%',
-          top: '25%',
+          top: '20%',
+          right: '8%',
+          height: '2px',
+          backgroundColor: '#15803d',
+          opacity: 0.8
+        }} />
+
+        {/* 网前区标记 - 调整位置 */}
+        <div style={{
+          position: 'absolute',
+          left: '8%',
+          top: '35%',
           right: '8%',
           height: '1px',
           backgroundColor: '#0ea5e9',
