@@ -94,14 +94,14 @@ export function TrainingPage({ onNavigate }: { onNavigate: (page: string) => voi
           borderRadius: '2px'
         }} />
 
-        {/* 双打边线 */}
+        {/* 双打边线 - 与单打边界线颜色一致 */}
         <div style={{
           position: 'absolute',
           left: '8%',
           top: '10%',
           width: '2px',
           height: '80%',
-          backgroundColor: '#0ea5e9', // 浅蓝色双打边线
+          backgroundColor: '#0369a1', // 与单打边界线颜色一致
           opacity: 0.8
         }} />
         <div style={{
@@ -110,7 +110,7 @@ export function TrainingPage({ onNavigate }: { onNavigate: (page: string) => voi
           top: '10%',
           width: '2px',
           height: '80%',
-          backgroundColor: '#0ea5e9', // 浅蓝色双打边线
+          backgroundColor: '#0369a1', // 与单打边界线颜色一致
           opacity: 0.8
         }} />
 
@@ -136,16 +136,6 @@ export function TrainingPage({ onNavigate }: { onNavigate: (page: string) => voi
           transform: 'translateX(-50%)'
         }} />
 
-        {/* 网袋示意线 */}
-        <div style={{
-          position: 'absolute',
-          left: '8%',
-          top: '20%',
-          right: '8%',
-          height: '2px',
-          backgroundColor: '#15803d',
-          opacity: 0.8
-        }} />
 
 
         {/* 底线标记 */}
