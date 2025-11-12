@@ -83,48 +83,78 @@ export function TrainingPage({ onNavigate }: { onNavigate: (page: string) => voi
         borderRadius: '8px',
         overflow: 'hidden'
       }}>
-        {/* 网球场边界线 */}
+        {/* 单打边界线 */}
         <div style={{
           position: 'absolute',
-          left: '10%',
+          left: '12%',
           top: '10%',
-          right: '10%',
+          right: '12%',
           bottom: '10%',
-          border: '2px solid #0369a1', // 蓝色边界线
+          border: '2px solid #0369a1', // 蓝色单打边界线
           borderRadius: '2px'
         }} />
 
-        {/* 发球区横线 */}
+        {/* 双打边线 */}
         <div style={{
           position: 'absolute',
-          left: '10%',
+          left: '8%',
+          top: '10%',
+          width: '2px',
+          height: '80%',
+          backgroundColor: '#0ea5e9', // 浅蓝色双打边线
+          opacity: 0.8
+        }} />
+        <div style={{
+          position: 'absolute',
+          right: '8%',
+          top: '10%',
+          width: '2px',
+          height: '80%',
+          backgroundColor: '#0ea5e9', // 浅蓝色双打边线
+          opacity: 0.8
+        }} />
+
+        {/* 发球区横线（前发球线） */}
+        <div style={{
+          position: 'absolute',
+          left: '8%',
           top: '50%',
-          right: '10%',
+          right: '8%',
           height: '2px',
           backgroundColor: '#0369a1',
           transform: 'translateY(-50%)'
         }} />
 
-        {/* 发球区中线 */}
+        {/* 发球区中线 - 只到发球线 */}
         <div style={{
           position: 'absolute',
           left: '50%',
-          top: '10%',
-          bottom: '10%',
+          top: '50%',
+          height: '40%', // 只到发球线，不是整个场地
           width: '2px',
           backgroundColor: '#0369a1',
-          transform: 'translateX(-50%)'
+          transform: 'translateX(-50%) translateY(10%)' // 从发球线向下延伸到边界线
         }} />
 
-        {/* 网前区标记线 */}
+        {/* 网前区标记 */}
         <div style={{
           position: 'absolute',
-          left: '10%',
-          top: '35%',
-          right: '10%',
+          left: '8%',
+          top: '25%',
+          right: '8%',
           height: '1px',
           backgroundColor: '#0ea5e9',
           opacity: 0.5
+        }} />
+
+        {/* 底线标记 */}
+        <div style={{
+          position: 'absolute',
+          left: '8%',
+          bottom: '10%',
+          right: '8%',
+          height: '2px',
+          backgroundColor: '#0369a1'
         }} />
 
         {/* 绘制击球点 - 将随机坐标映射到网球场区域 */}
@@ -133,9 +163,9 @@ export function TrainingPage({ onNavigate }: { onNavigate: (page: string) => voi
             key={index}
             style={{
               position: 'absolute',
-              // 将0-100%的随机坐标映射到网球场区域内
-              left: `${10 + point.x * 0.8}%`,
-              top: `${10 + point.y * 0.8}%`,
+              // 将0-100%的随机坐标映射到包括双打边线的整个场地区域内
+              left: `${8 + point.x * 0.84}%`, // 从8%到92%的宽度范围
+              top: `${10 + point.y * 0.8}%`, // 从10%到90%的高度范围
               width: '9px',
               height: '9px',
               borderRadius: '50%',
