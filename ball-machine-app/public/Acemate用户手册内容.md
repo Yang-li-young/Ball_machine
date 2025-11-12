@@ -117,7 +117,7 @@
 - 4. 调整上旋/平击/下旋等击球类型
 - 5. 调整发球时间间隔改变击球节奏
 
-## **NTRP 2.0–3.0：基础稳定阶段**
+## **NTRP 2.0–3.0 ：基础稳定阶段**
 
 > 目标：形成主动击球意识与方向控制能力
 
@@ -146,7 +146,7 @@
 
 **APP设置方法：**
 
-1. 打开 **Rally 模式 → 选择训练点位（3–5个）、设置Machine Vertical Position 4/5，Machine Horizontal Position 5**；
+1. 打开 **Rally 模式 → 选择训练点位（3–5个）、设置Vertical Position 4/5，Horizontal Position 5**；
 2. 调整适当的速度和旋转。
 
 # 常见问题

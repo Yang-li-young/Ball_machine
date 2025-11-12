@@ -1,0 +1,317 @@
+import React, { useState } from 'react';
+import { ChevronRight, Info, Zap, Box, Settings } from 'lucide-react';
+
+export default function TennisRobotParts() {
+  const [selectedPart, setSelectedPart] = useState(null);
+  const [activeCategory, setActiveCategory] = useState('all');
+
+  const categories = [
+    { id: 'all', name: '全部部件', icon: Box },
+    { id: 'core', name: '核心部件', icon: Zap },
+    { id: 'accessories', name: '配件组件', icon: Settings },
+  ];
+
+  const parts = [
+    {
+      id: 1,
+      category: 'core',
+      name: '底座主机',
+      nameEn: 'Base Unit',
+      description: '机器人的核心控制单元，集成电机、传感器和控制系统',
+      specs: ['尺寸: 560 × 445 × 650 mm', '重量: 17.8 kg', '材质: AL6061, PC+ABS'],
+      color: 'bg-blue-500'
+    },
+    {
+      id: 2,
+      category: 'core',
+      name: '麦克纳姆轮',
+      nameEn: 'Mecanum Wheels',
+      description: '全向移动轮组，实现机器人360度灵活移动',
+      specs: ['支持全向移动', '适应不同场地', '高耐磨材质'],
+      color: 'bg-purple-500'
+    },
+    {
+      id: 3,
+      category: 'core',
+      name: '双目摄像头',
+      nameEn: 'Binocular Cameras',
+      description: '立体视觉系统，用于场地识别和边界检测',
+      specs: ['双摄像头设计', '智能场地识别', '边界线检测'],
+      color: 'bg-indigo-500'
+    },
+    {
+      id: 4,
+      category: 'core',
+      name: '发球口',
+      nameEn: 'Launch Port',
+      description: '精确的球发射系统，可调节速度、角度和旋转',
+      specs: ['可调节发球速度', '多角度发射', '支持旋转球'],
+      color: 'bg-red-500'
+    },
+    {
+      id: 5,
+      category: 'core',
+      name: '球仓',
+      nameEn: 'Ball Hopper',
+      description: '储存网球的容器，配有智能进球系统',
+      specs: ['大容量储球', '快速装卸设计', '智能球感应'],
+      color: 'bg-green-500'
+    },
+    {
+      id: 6,
+      category: 'core',
+      name: '电池仓',
+      nameEn: 'Battery Compartment',
+      description: '可拆卸电池设计，支持快速更换',
+      specs: ['工作温度: 0℃-40℃', '可拆卸设计', '充电保护功能'],
+      color: 'bg-yellow-500'
+    },
+    {
+      id: 7,
+      category: 'accessories',
+      name: '伸缩集球网',
+      nameEn: 'Telescopic Collection Net',
+      description: '四支伸缩杆支撑的集球网，方便收集网球',
+      specs: ['4支伸缩杆', '魔术贴固定', '可折叠收纳'],
+      color: 'bg-teal-500'
+    },
+    {
+      id: 8,
+      category: 'accessories',
+      name: '球仓盖',
+      nameEn: 'Ball Hopper Cover',
+      description: '保护球仓的盖子，防止网球掉落',
+      specs: ['快速开合', '安全锁扣', '透明设计'],
+      color: 'bg-cyan-500'
+    },
+    {
+      id: 9,
+      category: 'core',
+      name: '搅拌杆',
+      nameEn: 'Stirring Rod',
+      description: '防止网球堆积，确保顺畅进球',
+      specs: ['自动搅拌', '防卡球设计', '静音运行'],
+      color: 'bg-orange-500'
+    },
+    {
+      id: 10,
+      category: 'core',
+      name: '进球转盘',
+      nameEn: 'Ball Feed Carousel',
+      description: '旋转式进球机构，精确控制发球节奏',
+      specs: ['精确计量', '可调速度', '智能感应'],
+      color: 'bg-pink-500'
+    },
+    {
+      id: 11,
+      category: 'core',
+      name: '球感应器',
+      nameEn: 'Ball Sensor',
+      description: '检测球的数量和位置，优化发球流程',
+      specs: ['实时检测', '准确计数', '智能反馈'],
+      color: 'bg-violet-500'
+    },
+    {
+      id: 12,
+      category: 'core',
+      name: '电源按钮',
+      nameEn: 'Power Button',
+      description: '主电源开关，按下保持开启状态',
+      specs: ['按压式设计', '状态保持', '防误触'],
+      color: 'bg-gray-500'
+    },
+    {
+      id: 13,
+      category: 'core',
+      name: 'LED指示灯',
+      nameEn: 'LED Indicator Light',
+      description: '显示机器人工作状态（红/蓝/绿三色）',
+      specs: ['红色: 启动中/故障', '蓝色: 固件升级', '绿色: 正常运行'],
+      color: 'bg-emerald-500'
+    },
+    {
+      id: 14,
+      category: 'core',
+      name: '电量显示',
+      nameEn: 'Battery Level Display',
+      description: '实时显示剩余电量',
+      specs: ['实时显示', '低电量提醒', '准确测量'],
+      color: 'bg-lime-500'
+    },
+    {
+      id: 15,
+      category: 'core',
+      name: 'DC 2.1充电口',
+      nameEn: 'DC 2.1 Charging Port',
+      description: '标准充电接口，支持快速充电',
+      specs: ['DC 2.1标准', '过充保护', '快速充电'],
+      color: 'bg-amber-500'
+    },
+    {
+      id: 16,
+      category: 'accessories',
+      name: '电源适配器',
+      nameEn: 'Power Adapter',
+      description: '为机器人充电的电源适配器',
+      specs: ['安全认证', '过载保护', '便携设计'],
+      color: 'bg-slate-500'
+    },
+    {
+      id: 17,
+      category: 'accessories',
+      name: '清洁刷',
+      nameEn: 'Cleaning Brush',
+      description: '用于清洁机器人部件的专用刷子',
+      specs: ['柔软刷毛', '不损伤部件', '易于使用'],
+      color: 'bg-rose-500'
+    },
+    {
+      id: 18,
+      category: 'accessories',
+      name: '十字螺丝刀',
+      nameEn: 'Phillips Screwdriver',
+      description: '用于安装集球网的工具',
+      specs: ['标准规格', '防滑手柄', '磁性吸头'],
+      color: 'bg-fuchsia-500'
+    }
+  ];
+
+  const filteredParts = activeCategory === 'all' 
+    ? parts 
+    : parts.filter(part => part.category === activeCategory);
+
+  const packageContents = [
+    { name: '集球网套装', items: ['集球网 × 1', '伸缩杆 × 4', '十字螺丝刀 × 1', '1/4"-20螺丝 × 4'] },
+    { name: '主机配件', items: ['清洁刷 × 1', '球仓 × 1', '底座主机 × 1', '电源适配器 × 1'] }
+  ];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-8 shadow-lg">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-3xl font-bold mb-2">Acemate S10</h1>
+          <p className="text-blue-100 text-lg">机器部件说明</p>
+          <div className="mt-4 flex items-center gap-4 text-sm bg-white/10 rounded-lg p-3 backdrop-blur">
+            <Info className="w-5 h-5" />
+            <span>尺寸: 560×445×650mm | 重量: 17.8kg | 连接: 5GHz Wi-Fi + 蓝牙 4.2</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Category Filter */}
+      <div className="sticky top-0 bg-white shadow-md z-10 px-6 py-4">
+        <div className="max-w-4xl mx-auto flex gap-3 overflow-x-auto">
+          {categories.map(cat => {
+            const Icon = cat.icon;
+            return (
+              <button
+                key={cat.id}
+                onClick={() => setActiveCategory(cat.id)}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-full font-medium whitespace-nowrap transition-all ${
+                  activeCategory === cat.id
+                    ? 'bg-blue-600 text-white shadow-lg scale-105'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                {cat.name}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Package Contents */}
+      <div className="max-w-4xl mx-auto px-6 py-6">
+        <div className="bg-white rounded-2xl shadow-md p-6 mb-6">
+          <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <Box className="w-6 h-6 text-blue-600" />
+            包装清单
+          </h2>
+          <div className="grid md:grid-cols-2 gap-4">
+            {packageContents.map((pkg, idx) => (
+              <div key={idx} className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-100">
+                <h3 className="font-semibold text-gray-800 mb-3">{pkg.name}</h3>
+                <ul className="space-y-2">
+                  {pkg.items.map((item, i) => (
+                    <li key={i} className="text-sm text-gray-600 flex items-start gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 flex-shrink-0"></span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Parts Grid */}
+        <div className="grid gap-4 mb-6">
+          {filteredParts.map(part => (
+            <div
+              key={part.id}
+              onClick={() => setSelectedPart(selectedPart === part.id ? null : part.id)}
+              className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all cursor-pointer overflow-hidden"
+            >
+              <div className="flex items-center gap-4 p-5">
+                <div className={`w-14 h-14 ${part.color} rounded-xl flex items-center justify-center text-white font-bold text-lg flex-shrink-0`}>
+                  {part.id}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold text-gray-800 text-lg">{part.name}</h3>
+                  <p className="text-sm text-gray-500">{part.nameEn}</p>
+                </div>
+                <ChevronRight className={`w-5 h-5 text-gray-400 transition-transform ${selectedPart === part.id ? 'rotate-90' : ''}`} />
+              </div>
+              
+              {selectedPart === part.id && (
+                <div className="px-5 pb-5 border-t border-gray-100 pt-4 bg-gradient-to-b from-gray-50 to-white">
+                  <p className="text-gray-700 mb-4 leading-relaxed">{part.description}</p>
+                  <div className="space-y-2">
+                    <p className="text-sm font-semibold text-gray-700 mb-2">技术规格：</p>
+                    {part.specs.map((spec, idx) => (
+                      <div key={idx} className="flex items-start gap-2 text-sm text-gray-600">
+                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 flex-shrink-0"></span>
+                        <span>{spec}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Footer Info */}
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl shadow-lg p-6 text-white">
+          <h3 className="text-lg font-bold mb-3">重要提示</h3>
+          <ul className="space-y-2 text-sm text-blue-50">
+            <li className="flex items-start gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-white mt-1.5 flex-shrink-0"></span>
+              首次使用前请充满电，避免过度充电或完全放电
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-white mt-1.5 flex-shrink-0"></span>
+              请在边界线清晰的场地使用，确保地面清洁无杂物
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-white mt-1.5 flex-shrink-0"></span>
+              工作温度范围：0℃ 至 40℃
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-white mt-1.5 flex-shrink-0"></span>
+              需要智能手机或平板（蓝牙 4.2 或更高版本）配合使用
+            </li>
+          </ul>
+        </div>
+
+        {/* Support Section */}
+        <div className="mt-6 text-center text-sm text-gray-500">
+          <p>技术支持: support@acematetennis.com</p>
+          <p className="mt-1">访问 www.acematetennis.com 获取更多信息</p>
+        </div>
+      </div>
+    </div>
+  );
+}

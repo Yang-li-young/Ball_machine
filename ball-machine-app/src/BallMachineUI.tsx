@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { MePage } from './MeUI';
+import { TrainingPage } from './Training';
 
 // 球组数据结构（内部 id 用于稳定性，显示序号使用数组索引+1）
 const defaultGroup = (id: number) => ({
@@ -79,6 +80,11 @@ export default function BallMachineUI() {
   // 如果导航到Me页面，显示MePage组件
   if (nav === "me") {
     return <MePage onNavigate={setNav} />; // Updated with navigation handler
+  }
+
+  // 如果导航到Training页面，显示Training组件
+  if (nav === "training") {
+    return <TrainingPage onNavigate={setNav} />;
   }
 
   return (

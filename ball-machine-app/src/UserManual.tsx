@@ -11,7 +11,7 @@ interface ManualSection {
 }
 
 export function UserManual({ onBack }: { onBack: () => void }) {
-  const [activeSection, setActiveSection] = useState('safety');
+  const [activeSection, setActiveSection] = useState('parts');
   const [expandedSubsection, setExpandedSubsection] = useState<string | null>(null);
   const [nav, setNav] = useState("me");
   const [showRobotImage, setShowRobotImage] = useState(true);
@@ -22,6 +22,28 @@ export function UserManual({ onBack }: { onBack: () => void }) {
   };
 
   const manualSections: ManualSection[] = [
+    {
+      id: 'parts',
+      title: '机器部件说明',
+      content: [
+        {
+          title: '核心部件',
+          description: '底座主机：机器人的核心控制单元，集成电机、传感器和控制系统\n• 尺寸: 560 × 445 × 650 mm\n• 重量: 17.8 kg\n• 材质: AL6061, PC+ABS\n\n麦克纳姆轮：全向移动轮组，实现机器人360度灵活移动\n• 支持全向移动\n• 适应不同场地\n• 高耐磨材质\n\n双目摄像头：立体视觉系统，用于场地识别和边界检测\n• 双摄像头设计\n• 智能场地识别\n• 边界线检测\n\n发球口：精确的球发射系统，可调节速度、角度和旋转\n• 可调节发球速度\n• 多角度发射\n• 支持旋转球\n\n球仓：储存网球的容器，配有智能进球系统\n• 大容量储球\n• 快速装卸设计\n• 智能球感应\n\n电池仓：可拆卸电池设计，支持快速更换\n• 工作温度: 0℃-40℃\n• 可拆卸设计\n• 充电保护功能\n\n搅拌杆：防止网球堆积，确保顺畅进球\n• 自动搅拌\n• 防卡球设计\n• 静音运行\n\n进球转盘：旋转式进球机构，精确控制发球节奏\n• 精确计量\n• 可调速度\n• 智能感应\n\n球感应器：检测球的数量和位置，优化发球流程\n• 实时检测\n• 准确计数\n• 智能反馈\n\n电源按钮：主电源开关，按下保持开启状态\n• 按压式设计\n• 状态保持\n• 防误触\n\nLED指示灯：显示机器人工作状态（红/蓝/绿三色）\n• 红色: 启动中/故障\n• 蓝色: 固件升级\n• 绿色: 正常运行\n\n电量显示：实时显示剩余电量\n• 实时显示\n• 低电量提醒\n• 准确测量\n\nDC 2.1充电口：标准充电接口，支持快速充电\n• DC 2.1标准\n• 过充保护\n• 快速充电'
+        },
+        {
+          title: '配件组件',
+          description: '伸缩集球网：四支伸缩杆支撑的集球网，方便收集网球\n• 4支伸缩杆\n• 魔术贴固定\n• 可折叠收纳\n\n球仓盖：保护球仓的盖子，防止网球掉落\n• 快速开合\n• 安全锁扣\n• 透明设计\n\n电源适配器：为机器人充电的电源适配器\n• 安全认证\n• 过载保护\n• 便携设计\n\n清洁刷：用于清洁机器人部件的专用刷子\n• 柔软刷毛\n• 不损伤部件\n• 易于使用\n\n十字螺丝刀：用于安装集球网的工具\n• 标准规格\n• 防滑手柄\n• 磁性吸头'
+        },
+        {
+          title: '包装清单',
+          description: '集球网套装：\n• 集球网 × 1\n• 伸缩杆 × 4\n• 十字螺丝刀 × 1\n• 1/4"-20螺丝 × 4\n\n主机配件：\n• 清洁刷 × 1\n• 球仓 × 1\n• 底座主机 × 1\n• 电源适配器 × 1'
+        },
+        {
+          title: '重要提示',
+          description: '• 首次使用前请充满电，避免过度充电或完全放电\n• 请在边界线清晰的场地使用，确保地面清洁无杂物\n• 工作温度范围：0℃ 至 40℃\n• 需要智能手机或平板（蓝牙 4.2 或更高版本）配合使用\n• 技术支持: support@acematetennis.com\n• 访问 www.acematetennis.com 获取更多信息'
+        }
+      ]
+    },
     {
       id: 'quickstart',
       title: '使用前提醒',
@@ -126,14 +148,10 @@ export function UserManual({ onBack }: { onBack: () => void }) {
 
   // 添加滚动监听来隐藏机器人图片（简化版，防抖动）
   useEffect(() => {
-    let isScrolling = false;
     let scrollEndTimer: NodeJS.Timeout | null = null;
 
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-
-      // 标记正在滚动
-      isScrolling = true;
 
       // 清除之前的定时器
       if (scrollEndTimer) {
@@ -142,8 +160,6 @@ export function UserManual({ onBack }: { onBack: () => void }) {
 
       // 设置新的定时器，在滚动结束后更新状态
       scrollEndTimer = setTimeout(() => {
-        isScrolling = false;
-
         // 简单的阈值判断：滚动超过150px就隐藏图片
         if (currentScrollY > 150) {
           setShowRobotImage(false);
