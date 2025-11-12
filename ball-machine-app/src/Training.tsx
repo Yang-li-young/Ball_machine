@@ -125,11 +125,11 @@ export function TrainingPage({ onNavigate }: { onNavigate: (page: string) => voi
           transform: 'translateY(-50%)'
         }} />
 
-        {/* 网袋示意线 - 横向延长至双打边线 */}
+        {/* 网袋示意线 - 横向延长至双打边线并向上移动 */}
         <div style={{
           position: 'absolute',
           left: '8%', // 双打边线位置
-          top: '20%',
+          top: '10%', // 向上移动到10%高度位置
           right: '8%', // 双打边线位置
           height: '2px',
           backgroundColor: '#0369a1',
@@ -140,8 +140,8 @@ export function TrainingPage({ onNavigate }: { onNavigate: (page: string) => voi
         <div style={{
           position: 'absolute',
           left: '50%',
-          top: '20%', // 网袋示意线位置
-          height: '30%', // 延伸到发球线
+          top: '10%', // 网袋示意线位置
+          height: '40%', // 延伸到发球线
           width: '2px',
           backgroundColor: '#0369a1',
           transform: 'translateX(-50%)'
